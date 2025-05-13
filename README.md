@@ -31,12 +31,12 @@
    ```bash
    npm install
 3. サーバーを起動
-
-node server.js
+    ```bash
+    node server.js
 
 4. ブラウザで以下を開く
 
-http://localhost:3000
+    http://localhost:3000
 
 5. 画像をアップロードし、サイズ（32 / 64 / 128）を選んで「生成」ボタンを押す
 
