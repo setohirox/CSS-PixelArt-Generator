@@ -2,19 +2,32 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>CSS画像変換</title>
+    <meta charset="UTF-8">
+    <title>画像 → CSS変換</title>
+    <style>
+        pre {
+            background: #f4f4f4;
+            padding: 1em;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: monospace;
+            color: #333;
+        }
+    </style>
+
 </head>
 
 <body>
-    <h1>画像 → CSS変換</h1>
+    <h1>画像 → CSS変換ツール</h1>
     <form id="upload-form">
         <input type="file" name="image" accept="image/*" required />
         <select name="size">
+            <option value="32">32x32</option>
             <option value="64">64x64</option>
             <option value="128">128x128</option>
-            <option value="256">256x256</option>
-            <option value="512">512x512</option>
         </select>
         <button type="submit">生成</button>
     </form>
