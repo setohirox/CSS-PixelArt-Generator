@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CSS画像変換</title>
+</head>
+
+<body>
+    <h1>画像 → CSS変換</h1>
+    <form id="upload-form">
+        <input type="file" name="image" accept="image/*" required />
+        <select name="size">
+            <option value="64">64x64</option>
+            <option value="128">128x128</option>
+            <option value="256">256x256</option>
+            <option value="512">512x512</option>
+        </select>
+        <button type="submit">生成</button>
+    </form>
+
+    <h2>プレビュー</h2>
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
