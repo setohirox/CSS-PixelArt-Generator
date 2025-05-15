@@ -1,10 +1,9 @@
-// server.js
 const express = require("express");
 const multer = require("multer");
 const sharp = require("sharp");
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() }); // ← ファイル保存なし
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.static("public"));
 
@@ -24,6 +23,7 @@ app.post("/generate", upload.single("image"), async (req, res) => {
 
     const channels = info.channels;
     const cssLines = [];
+    const pixels = [];
     const getIndex = (x, y) => (y * size + x) * channels;
 
     for (let y = 0; y < size; y++) {
@@ -36,7 +36,9 @@ app.post("/generate", upload.single("image"), async (req, res) => {
         const color = a < 1
           ? `rgba(${r},${g},${b},${a.toFixed(2)})`
           : `rgb(${r},${g},${b})`;
+
         cssLines.push(`linear-gradient(${color} ${y}px, ${color} ${y + 1}px) ${x}px ${y}px`);
+        pixels.push({ x, y, r, g, b, a });
       }
     }
 
@@ -50,8 +52,10 @@ app.post("/generate", upload.single("image"), async (req, res) => {
 }`.trim();
 
     res.json({
-      html: `<div class="pixel-art"></div>`,
+      html: ``,
       css,
+      pixels,
+      size,
     });
   } catch (err) {
     console.error("処理エラー:", err);
