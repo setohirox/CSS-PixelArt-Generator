@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+pre code {
+    white-space: pre-wrap;
+    /* 自動で折り返す */
+    word-break: break-word;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.preview-container {
+    width: 50%;
+    height: 100%;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

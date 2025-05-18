@@ -58,6 +58,9 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   canvas.width = data.size;
   canvas.height = data.size;
 
+  const tooltip = document.getElementById("css-tooltip");
+
+  // イメージデータ生成
   const imageData = ctx.createImageData(data.size, data.size);
   for (let i = 0; i < data.pixels.length; i++) {
     const { r, g, b, a } = data.pixels[i];
@@ -67,23 +70,53 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     imageData.data[idx + 2] = b;
     imageData.data[idx + 3] = Math.round(a * 255);
   }
+
+  // 描画用バッファを保持
   ctx.putImageData(imageData, 0, 0);
 
-  // CSSツールチップ
-  const tooltip = document.getElementById("css-tooltip");
+  // ピクセル位置
+  let hoverX = -1;
+  let hoverY = -1;
+
+  // 再描画（ハイライト含む）
+  function redrawCanvas() {
+    ctx.putImageData(imageData, 0, 0);
+
+    if (hoverX >= 0 && hoverY >= 0) {
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(hoverX, hoverY, 1, 1);
+    }
+  }
+
+  // マウス移動時
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor(e.clientX - rect.left);
-    const y = Math.floor(e.clientY - rect.top);
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const x = Math.floor((e.clientX - rect.left) * scaleX);
+    const y = Math.floor((e.clientY - rect.top) * scaleY);
+
     const index = y * data.size + x;
     const pixel = data.pixels[index];
+
     if (pixel) {
+      hoverX = x;
+      hoverY = y;
+      redrawCanvas();
+
       const { r, g, b, a } = pixel;
       const color = a < 1 ? `rgba(${r},${g},${b},${a.toFixed(2)})` : `rgb(${r},${g},${b})`;
       tooltip.textContent = `linear-gradient(${color} ${y}px, ${color} ${y + 1}px) ${x}px ${y}px;`;
     }
   });
+
+  // マウスが外れた時
   canvas.addEventListener("mouseleave", () => {
+    hoverX = -1;
+    hoverY = -1;
+    redrawCanvas();
     tooltip.textContent = "";
   });
 });

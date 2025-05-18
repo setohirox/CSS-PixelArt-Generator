@@ -9,7 +9,7 @@ app.use(express.static("public"));
 
 app.post("/generate", upload.single("image"), async (req, res) => {
   const size = parseInt(req.body.size);
-  const allowedSizes = [32, 64, 128];
+  const allowedSizes = [32, 64, 128, 256, 512];
   if (!allowedSizes.includes(size)) {
     return res.status(400).send("Invalid size");
   }
@@ -46,7 +46,8 @@ app.post("/generate", upload.single("image"), async (req, res) => {
 .pixel-art {
   width: ${size}px;
   height: ${size}px;
-  background:${cssLines.join(",")};
+  background:
+    ${cssLines.join(",\n    ")};
   background-size: 1px 1px;
   background-repeat: no-repeat;
 }`.trim();

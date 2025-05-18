@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>画像 → CSS変換ツール</title>
-    <link href="./output.css" rel="stylesheet">
-  </head>
-  <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center py-10 px-4">
-    <h1 class="text-2xl font-semibold mb-6">画像 → CSS変換ツール</h1>
 
-    <form id="upload-form" class="bg-white shadow-md rounded px-6 pt-4 pb-6 mb-6 w-full max-w-md space-y-4">
-      <div>
-        <input type="file" name="image" accept="image/*" required class="w-full border border-gray-300 rounded p-2" />
-      </div>
-      <div>
-        <select name="size" class="w-full border border-gray-300 rounded p-2">
-          <option value="32">32x32</option>
-          <option value="64">64x64</option>
-          <option value="128">128x128</option>
-        </select>
-      </div>
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">生成</button>
-    </form>
+<head>
+  <meta charset="UTF-8" />
+  <title>画像 → CSS変換ツール</title>
+  <link href="./style.css" rel="stylesheet" />
+</head>
 
-    <div class="w-full max-w-2xl">
-      <h2 class="text-lg font-semibold mb-2">canvas プレビュー</h2>
-      <canvas id="preview" width="128" height="128" class="border border-gray-400 mb-2"></canvas>
-      <div id="css-tooltip" class="text-sm bg-blue-100 text-blue-800 px-3 py-2 rounded font-mono"></div>
-
-      <h2 class="text-lg font-semibold mt-6 mb-2">生成結果</h2>
-      <div id="result" class="space-y-6"></div>
+<body>
+  <main class="container">
+    <div class="preview-container">
+      <h2>canvas プレビュー</h2>
+      <div id="css-tooltip"></div>
+      <canvas id="preview" width="128" height="128"></canvas>
     </div>
+    <div>
+      <h1>画像 → CSS変換ツール</h1>
 
-    <script src="script.js"></script>
-  </body>
+      <form id="upload-form">
+        <div>
+          <input type="file" name="image" accept="image/*" required />
+        </div>
+        <div>
+          <select name="size">
+            <option value="32">32x32</option>
+            <option value="64">64x64</option>
+            <option value="128">128x128</option>
+            <option value="256">256x256</option>
+            <option value="512">512x512</option>
+          </select>
+        </div>
+        <button type="submit">生成</button>
+      </form>
+
+      <div>
+
+        <h2>生成結果</h2>
+        <div id="result"></div>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+
 </html>
