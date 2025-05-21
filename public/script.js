@@ -3,56 +3,62 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   const form = e.target;
   const formData = new FormData(form);
 
+  const loading = document.getElementById("loading");
+  loading.style.display = "block"; // Show loading
+
   const res = await fetch("/generate", {
     method: "POST",
     body: formData,
   });
 
-  if (!res.ok) return alert("画像処理に失敗しました");
+  if (!res.ok) {
+    loading.style.display = "none";
+    return alert("Failed to process image");
+  }
 
   const data = await res.json();
 
-  // CSS適用
+  // Apply CSS
   const styleTag = document.createElement("style");
   styleTag.textContent = data.css;
   document.head.appendChild(styleTag);
 
-  // CSSダウンロードリンク用 Blob
+  // CSS download link Blob
   const blob = new Blob([data.css], { type: "text/css" });
   const blobUrl = URL.createObjectURL(blob);
 
   const result = document.getElementById("result");
 
-  // HTMLコード（表示専用）
+  // HTML code (display only)
   const htmlCode = `<div class="pixel-art"></div>`;
 
   result.innerHTML = `
-    <h3>HTMLコード</h3>
+    <h3>HTML Code</h3>
     <pre><code id="html-code">${htmlCode.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code>
-      <button class="copy-button" data-target="html-code">コピー</button>
+      <button class="copy-button" data-target="html-code">Copy</button>
     </pre>
 
-    <h3>CSSコード</h3>
+    <h3>CSS Code</h3>
     <pre><code id="css-code">${data.css.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code>
-      <button class="copy-button" data-target="css-code">コピー</button>
+      <button class="copy-button" data-target="css-code">Copy</button>
     </pre>
 
-    <p><a href="${blobUrl}" download="pixel-art.css">CSSをダウンロード</a></p>
+    <p><a href="${blobUrl}" download="pixel-art.css">Download CSS</a></p>
   `;
 
-  // コピー処理
+  // Copy process
   document.querySelectorAll(".copy-button").forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetId = btn.dataset.target;
       const text = document.getElementById(targetId).innerText;
       navigator.clipboard.writeText(text).then(() => {
-        btn.textContent = "コピー済み";
-        setTimeout(() => (btn.textContent = "コピー"), 1500);
+        btn.textContent = "Copied";
+        setTimeout(() => (btn.textContent = "Copy"), 1500);
       });
     });
   });
 
-  // canvas 描画
+  // canvas drawing
   const canvas = document.getElementById("preview");
   const ctx = canvas.getContext("2d");
   canvas.width = data.size;
@@ -60,7 +66,7 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
 
   const tooltip = document.getElementById("css-tooltip");
 
-  // イメージデータ生成
+  // Generate image data
   const imageData = ctx.createImageData(data.size, data.size);
   for (let i = 0; i < data.pixels.length; i++) {
     const { r, g, b, a } = data.pixels[i];
@@ -71,17 +77,13 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     imageData.data[idx + 3] = Math.round(a * 255);
   }
 
-  // 描画用バッファを保持
   ctx.putImageData(imageData, 0, 0);
 
-  // ピクセル位置
   let hoverX = -1;
   let hoverY = -1;
 
-  // 再描画（ハイライト含む）
   function redrawCanvas() {
     ctx.putImageData(imageData, 0, 0);
-
     if (hoverX >= 0 && hoverY >= 0) {
       ctx.strokeStyle = "red";
       ctx.lineWidth = 1;
@@ -89,7 +91,6 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     }
   }
 
-  // マウス移動時
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
@@ -112,11 +113,12 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
     }
   });
 
-  // マウスが外れた時
   canvas.addEventListener("mouseleave", () => {
     hoverX = -1;
     hoverY = -1;
     redrawCanvas();
     tooltip.textContent = "";
   });
+
+  loading.style.display = "none"; // Hide loading
 });
